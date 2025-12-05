@@ -55,7 +55,7 @@ public class CardFragment extends Fragment implements OnFileSelectedListener {
     View view;
     String data;
     String [] items = {"Details", "Rename" , "Delete", "Share"};
-    String setStorage;
+    String secStorage;
 
     @Nullable
     @Override
@@ -69,13 +69,13 @@ public class CardFragment extends Fragment implements OnFileSelectedListener {
         File[] externalCacheDirs = getContext().getExternalCacheDirs();
         for (File file : externalCacheDirs){
             if (Environment.isExternalStorageRemovable(file)){
-                setStorage = file.getPath().split("/Android")[0];
+                secStorage = file.getPath().split("/Android")[0];
                 break;
 
             }
         }
 
-        storage = new File(setStorage);
+        storage = new File(secStorage);
 
         try {
             data = getArguments().getString("path");

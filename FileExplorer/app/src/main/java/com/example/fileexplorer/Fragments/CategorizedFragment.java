@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,8 +36,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -44,40 +43,33 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class InternalFragment extends Fragment implements OnFileSelectedListener {
+public class CategorizedFragment extends Fragment implements OnFileSelectedListener {
 
     private RecyclerView recyclerView;
     private FileAdapter fileAdapter;
     private List<File> fileList;
-    private ImageView img_back;
-    private TextView tv_pathHolder;
     File storage;
 
     View view;
     String data;
     String [] items = {"Details", "Rename" , "Delete", "Share"};
+    File path;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_internal, container, false);
+        view = inflater.inflate(R.layout.fragment_categorized, container, false);
 
-        img_back = view.findViewById(R.id.img_back);
-        tv_pathHolder = view.findViewById(R.id.tv_pathHolder);
-
-
-        String internalStorage = System.getenv("EXTERNAL_STORAGE");
-        storage = new File(internalStorage);
-
-        try {
-            data = getArguments().getString("path");
-            File file = new File(data);
-            storage = file;
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        Bundle bundle = this.getArguments();
+        if (bundle.getString("fileType").equals("downloads")){
+            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);;
+        }
+        else{
+            path = Environment.getExternalStorageDirectory();
         }
 
-        tv_pathHolder.setText(storage.getAbsolutePath());
+
+
         runTimePermission();
 
         return view;
@@ -107,25 +99,59 @@ public class InternalFragment extends Fragment implements OnFileSelectedListener
 
         for (File singleFile : files){
             if (singleFile.isDirectory() && !singleFile.isHidden()) {
-                arrayList.add(singleFile);
+                arrayList.addAll(findFiles(singleFile));
+            }
+            else {
+                switch (getArguments().getString("fileType")){
+                    case "image" :
+                        if (singleFile.getName().toLowerCase().endsWith(".jpeg") ||
+                                singleFile.getName().toLowerCase().endsWith(".jpg") ||
+                                singleFile.getName().toLowerCase().endsWith(".png")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+
+                    case "video" :
+                        if (singleFile.getName().toLowerCase().endsWith(".mp4")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+                    case "music" :
+                        if (singleFile.getName().toLowerCase().endsWith(".mp3") ||
+                                singleFile.getName().toLowerCase().endsWith(".wav")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+                    case "docs" :
+                        if (singleFile.getName().toLowerCase().endsWith(".pdf") ||
+                                singleFile.getName().toLowerCase().endsWith(".doc")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+                    case "apk" :
+                        if (singleFile.getName().toLowerCase().endsWith(".apk")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+                    case "downloads" :
+                        if (singleFile.getName().toLowerCase().endsWith(".jpeg") ||
+                                singleFile.getName().toLowerCase().endsWith(".jpg") ||
+                                singleFile.getName().toLowerCase().endsWith(".png") ||
+                                singleFile.getName().toLowerCase().endsWith(".mp3") ||
+                                singleFile.getName().toLowerCase().endsWith(".wav") ||
+                                singleFile.getName().toLowerCase().endsWith(".mp4") ||
+                                singleFile.getName().toLowerCase().endsWith(".pdf") ||
+                                singleFile.getName().toLowerCase().endsWith(".doc") ||
+                                singleFile.getName().toLowerCase().endsWith(".apk")) {
+                            arrayList.add(singleFile);
+                        }
+                        break;
+
+                }
             }
         }
 
-        for (File singleFile : files) {
-            if (singleFile.getName().toLowerCase().endsWith(".jpeg") ||
-                singleFile.getName().toLowerCase().endsWith(".jpg") ||
-                singleFile.getName().toLowerCase().endsWith(".png") ||
-                singleFile.getName().toLowerCase().endsWith(".mp3") ||
-                singleFile.getName().toLowerCase().endsWith(".wav") ||
-                singleFile.getName().toLowerCase().endsWith(".mp4") ||
-                singleFile.getName().toLowerCase().endsWith(".pdf") ||
-                singleFile.getName().toLowerCase().endsWith(".doc") ||
-                singleFile.getName().toLowerCase().endsWith(".apk"))
-            {
-                arrayList.add(singleFile);
 
-            }
-        }
         return arrayList;
     }
 
@@ -134,7 +160,7 @@ public class InternalFragment extends Fragment implements OnFileSelectedListener
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         fileList = new ArrayList<>();
-        fileList.addAll(findFiles(storage));
+        fileList.addAll(findFiles(path));
 
         fileAdapter = new FileAdapter(getContext(), fileList, this);
         recyclerView.setAdapter(fileAdapter);
@@ -147,7 +173,7 @@ public class InternalFragment extends Fragment implements OnFileSelectedListener
         if (file.isDirectory())  {
             Bundle bundle = new Bundle();
             bundle.putString("path", file.getAbsolutePath());
-            InternalFragment internalFragment = new InternalFragment();
+            CategorizedFragment internalFragment = new CategorizedFragment();
             internalFragment.setArguments(bundle);
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, internalFragment)
