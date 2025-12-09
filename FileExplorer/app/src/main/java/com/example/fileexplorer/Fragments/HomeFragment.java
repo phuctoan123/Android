@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -210,9 +211,9 @@ public class HomeFragment extends Fragment implements OnFileSelectedListener {
     }
 
     private void displayFiles() {
-        recyclerView = view.findViewById(R.id.recycler_recents);
+        recyclerView = view.findViewById(R.id.recycler_recents); //Layout cho phần recycler view
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         fileList = new ArrayList<>();
         fileList.addAll(findFiles(Environment.getExternalStorageDirectory()));
 
@@ -346,10 +347,20 @@ public class HomeFragment extends Fragment implements OnFileSelectedListener {
 
                     case "Share":
                         String fileName = file.getName();
-                        Intent share = new Intent();
-                        share.setAction(Intent.ACTION_SEND);
+
+                        Uri uri = FileProvider.getUriForFile(
+                                getContext(),
+                                getContext().getPackageName() + ".provider",
+                                file
+                        );
+
+                        Intent share = new Intent(Intent.ACTION_SEND);
                         share.setType("image/jpeg");
-                        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                        share.putExtra(Intent.EXTRA_STREAM, uri);
+
+                        // Cho phép app nhận chia sẻ đọc file
+                        share.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                         startActivity(Intent.createChooser(share, "Share " + fileName));
                         break;
 

@@ -22,12 +22,19 @@
         </item>
     </group>
     <item
-        android:title="More">
+        android:title="Another">
         <menu>
             <item
                 android:id="@+id/nav_about"
                 android:title="About"
                 android:icon="@drawable/ic_about">
+
+            </item>
+
+            <item
+                android:id="@+id/nav_theme"
+                android:title="Theme and Apperance"
+                android:icon="@drawable/ic_theme">
 
             </item>
         </menu>

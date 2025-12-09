@@ -61,11 +61,16 @@ public class CategorizedFragment extends Fragment implements OnFileSelectedListe
         view = inflater.inflate(R.layout.fragment_categorized, container, false);
 
         Bundle bundle = this.getArguments();
-        if (bundle.getString("fileType").equals("downloads")){
-            path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);;
-        }
-        else{
-            path = Environment.getExternalStorageDirectory();
+        if (bundle != null) {
+            if (bundle.containsKey("path")) {
+                path = new File(bundle.getString("path"));
+            }
+            else if ("downloads".equals(bundle.getString("fileType"))) {
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            }
+            else {
+                path = Environment.getExternalStorageDirectory();
+            }
         }
 
 
@@ -95,7 +100,13 @@ public class CategorizedFragment extends Fragment implements OnFileSelectedListe
 
     public ArrayList<File> findFiles(File file) {
         ArrayList<File> arrayList = new ArrayList<>();
+
+        //Check null and exist
+        if (file == null || !file.exists()) return arrayList;
+
         File[] files = file.listFiles();
+
+        if (files == null) return arrayList;
 
         for (File singleFile : files){
             if (singleFile.isDirectory() && !singleFile.isHidden()) {
@@ -156,9 +167,15 @@ public class CategorizedFragment extends Fragment implements OnFileSelectedListe
     }
 
     private void displayFiles() {
+        if (path == null || !path.exists()) {
+            Toast.makeText(getContext(), "Cannot open this folder.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         recyclerView = view.findViewById(R.id.recycle_internal);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
         fileList = new ArrayList<>();
         fileList.addAll(findFiles(path));
 

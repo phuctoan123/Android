@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.fileexplorer.Fragments.AboutFragment;
 import com.example.fileexplorer.Fragments.CardFragment;
 import com.example.fileexplorer.Fragments.HomeFragment;
 import com.example.fileexplorer.Fragments.InternalFragment;
@@ -81,7 +82,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, cardFragment).addToBackStack(null).commit();
                     break;
                 case R.id.nav_about:
-                    Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new AboutFragment())
+                            .addToBackStack(null)
+                            .commit();
                     break;
         }
         drawerLayout.closeDrawer(GravityCompat.START);

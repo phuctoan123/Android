@@ -17,7 +17,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:elevation="4dp"
-            android:background="@color/green"
+            android:background="@drawable/nav_header_gradient"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
@@ -33,7 +33,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        app:itemIconTint="@color/green"
+        app:itemIconTint="@color/purple_200"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"

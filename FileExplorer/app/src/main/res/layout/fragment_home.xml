@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
+    android:background="@drawable/nav_header_gradient"
     android:orientation="vertical"
     android:weightSum="3">
     
@@ -49,7 +49,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
                 <ImageView
-                    android:src="@drawable/ic_play"
+                    android:src="@drawable/ic_video"
                     android:padding="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="60dp">
@@ -74,7 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
                 <ImageView
-                    android:src="@drawable/ic_music"
+                    android:src="@drawable/ic_audio"
                     android:padding="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="60dp">
@@ -83,7 +83,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Musics"
+                    android:text="Audio files"
                     android:textColor="@color/white"
                     android:textAlignment="center"
                     android:textStyle="bold"
@@ -190,17 +190,18 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/green">
+            android:layout_height="2dp"
+            android:background="@color/white">
 
         </View>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recents:"
-            android:textColor="@color/green"
+            android:text="Your recent files:"
+            android:textColor="@color/white"
             android:layout_marginLeft="8dp"
             android:textSize="18sp"
+            android:textStyle="bold"
             android:layout_marginTop="8dp">
 
         </TextView>
